@@ -15,8 +15,10 @@ h2{color:#666;font-size:12px;font-weight:400;letter-spacing:.08em;text-transform
 .sl .val{color:#ccc;font-size:12px;font-weight:500}
 input[type=range]{width:100%;accent-color:#4a9eff;height:18px;cursor:pointer}
 #chart-wrap{position:relative;height:320px;width:100%}
-.legend{display:flex;gap:20px;margin-bottom:8px;font-size:11px}
-.legend span{display:flex;align-items:center;gap:5px}
+.legend{display:flex;gap:12px;margin-bottom:8px;font-size:11px}
+button.tog{background:none;border:1px solid #333;border-radius:4px;color:#888;cursor:pointer;display:flex;align-items:center;gap:5px;padding:4px 10px;font-family:monospace;font-size:11px;transition:opacity .15s,border-color .15s}
+button.tog.on{color:#ccc;border-color:#555}
+button.tog.off{opacity:.35;border-color:#2a2a2a}
 .legend i{display:inline-block;width:24px;height:2px}
 .lb{background:#4a9eff}
 .lr{background:#ff4a4a}
@@ -49,8 +51,8 @@ input[type=range]{width:100%;accent-color:#4a9eff;height:18px;cursor:pointer}
     </div>
   </div>
   <div class="legend">
-    <span><i class="lb"></i>current I (pA) — left axis</span>
-    <span><i class="lr"></i>voltage V (mV) — right axis</span>
+    <button class="tog on" id="tog-I" onclick="toggleTrace(0,'tog-I')"><i class="lb"></i>current I (pA)</button>
+    <button class="tog on" id="tog-V" onclick="toggleTrace(1,'tog-V')"><i class="lr"></i>voltage V (mV)</button>
   </div>
   <div id="chart-wrap">
     <canvas id="chart" role="img" aria-label="Bilayer simulation dual-axis chart: measured current in blue (left axis) and applied triangular voltage in red (right axis) versus time in ms"></canvas>
@@ -240,6 +242,17 @@ function refresh() {
   chart.options.scales.y.max  = rI.max;
   chart.options.scales.y2.min = rV.min;
   chart.options.scales.y2.max = rV.max;
+  chart.update('none');
+}
+
+/* ---------- toggle traces ---------- */
+function toggleTrace(idx, btnId) {
+  const ds = chart.data.datasets[idx];
+  const btn = document.getElementById(btnId);
+  const visible = ds.hidden;
+  ds.hidden = !visible;
+  btn.classList.toggle('on',  visible);
+  btn.classList.toggle('off', !visible);
   chart.update('none');
 }
 
